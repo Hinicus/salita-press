@@ -39,16 +39,17 @@
       </div>
       <button
         class="btn btn-salita ms-auto"
-        :disabled="!isEnabled && !isLoading">
+        :disabled="!isEnabled || isLoading">
         {{ isRegistering ? "Register" : "Login" }}
 
-        <div
+        <span
           class="spinner-border spinner-border-sm text-center"
           role="status"
           v-if="isLoading">
           <span class="visually-hidden">Loading...</span>
-        </div>
+        </span>
       </button>
+
       <p class="text-center mt-3" v-if="isRegistering">
         Have an account? <router-link to="/login">Login</router-link>
       </p>
@@ -119,20 +120,20 @@ async function handleSubmit() {
       router.push("/login");
     } else if (!isRegistering.value && res.status === 200) {
       localStorage.setItem("token", res.data.access);
-      getUserDetails(res.data.access);
+      await getUserDetails(res.data.access);
       notyf.success("Successfully Logged in!");
       router.push("/");
     }
   } catch (e) {
     //login error handling
-    if (e.response.status === 401) {
+    if (e.response?.status === 401) {
       return notyf.error("Incorrect Email or Password!");
     } else if (e.response.status === 404) {
       return notyf.error("Email does not exist");
     }
 
     //register error handling
-    if (e.response.status === 400) {
+    if (e.response?.status === 400) {
       return notyf.error("Email is not valid or password's length is < 8");
     }
 
