@@ -56,6 +56,11 @@ const router = createRouter({
       name: "admin",
       component: AdminDashboardPage,
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: Home,
+    },
   ],
 });
 
